@@ -1,5 +1,7 @@
 import { Button, MenuItem, TextField, Typography } from "@mui/material";
-import { Form, FormikProps, useFormik, withFormik } from "formik";
+import axios from "axios";
+import { useFormik } from "formik";
+import { useState } from "react";
 import * as yup from "yup";
 import "./AnnotationForm.scss";
 
@@ -29,8 +31,8 @@ const currencies = [
   },
 ];
 
-const InnerForm = (props: OtherProps & FormikProps<FormValues>) => {
-  const { isSubmitting, message } = props;
+const AnnotationForm = () => {
+  const [submitting, setSubmitting] = useState(false);
 
   const validationSchema = yup.object({
     supplierName: yup
@@ -38,23 +40,41 @@ const InnerForm = (props: OtherProps & FormikProps<FormValues>) => {
       .matches(/^[a-zA-ZÀ-ÖÙ-öù-ÿĀ-žḀ-ỿ0-9\s\-\/.]+$/, "ad"),
   });
 
+  const handleSubmit = async (
+    values: FormValues,
+    { resetForm }: { resetForm: () => void }
+  ) => {
+    try {
+      setSubmitting(true);
+      // Perform form submission logic here
+      console.log(values);
+      await axios.post("/api/saveFormData", values);
+
+      // Set submitting to false after successful submission
+      setSubmitting(false);
+      resetForm();
+    } catch (error) {
+      // Handle form submission error
+      console.error(error);
+      setSubmitting(false);
+    }
+  };
+
   const formik = useFormik({
     initialValues: {
       supplierName: "",
-      purchaseDate: "",
-      totalAmount: "",
+      purchaseDate: new Date(),
+      totalAmount: 0,
       currency: "",
     },
     validationSchema: validationSchema,
-    onSubmit: (values) => {
-      formik.resetForm();
-    },
+    onSubmit: handleSubmit,
   });
 
   return (
-    <Form className="annotationForm">
+    <form className="annotationForm" onSubmit={formik.handleSubmit}>
       <Typography variant="h5" component={"h5"} className="formTitle">
-        {message}
+        Annotate 'Em all
       </Typography>
 
       <TextField
@@ -123,52 +143,11 @@ const InnerForm = (props: OtherProps & FormikProps<FormValues>) => {
         ))}
       </TextField>
 
-      <Button type="submit" disabled={isSubmitting} variant="contained">
+      <Button type="submit" disabled={submitting} variant="contained">
         Submit
       </Button>
-    </Form>
+    </form>
   );
 };
-
-// The type of props MyForm receives
-interface MyFormProps {
-  initialEmail?: string;
-  message: string; // if this passed all the way through you might do this or make a union type
-}
-
-// Wrap our form with the withFormik HoC
-const MyForm = withFormik<MyFormProps, FormValues>({
-  // Transform outer props into form values
-  mapPropsToValues: (props) => {
-    return {
-      supplierName: "",
-      purchaseDate: new Date(),
-      totalAmount: 0,
-      currency: "EUR",
-    };
-  },
-
-  // Add a custom validation function (this can be async too!)
-  //   validate: (values: FormValues) => {
-  //     let errors: FormikErrors<FormValues> = {};
-  //     if (!values.email) {
-  //       errors.email = "Required";
-  //     } else if (!isValidEmail(values.email)) {
-  //       errors.email = "Invalid email address";
-  //     }
-  //     return errors;
-  //   },
-
-  handleSubmit: (values) => {
-    // do submitting things
-  },
-})(InnerForm);
-
-// Use <MyForm /> wherevs
-const AnnotationForm = () => (
-  <div>
-    <MyForm message="Annotate 'em all" />
-  </div>
-);
 
 export default AnnotationForm;
