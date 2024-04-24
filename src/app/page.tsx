@@ -1,5 +1,6 @@
 "use client";
 import { Button, Grid, Typography } from "@mui/material";
+import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { Document, Page, pdfjs } from "react-pdf";
@@ -77,7 +78,7 @@ function StyledDropzone({ files, setFiles }: any) {
     <div className="container">
       <div {...getRootProps({ style })}>
         <input {...getInputProps()} />
-        <p>Drag 'n' drop some file here, or click to select file</p>
+        <p>Drag &apos;n&apos; drop some file here, or click to select file</p>
         <em>(Only *.jpeg, *.jpg, *.png images and *.pdf will be accepted)</em>
       </div>
     </div>
@@ -95,10 +96,9 @@ export default function Home() {
   const thumbs = files.map((file, id) => (
     <div className={styles.thumb} key={id}>
       <div className={styles.thumbInner}>
-        <img
+        <Image
           src={file.preview}
-          style={img}
-          // Revoke data uri after image is loaded
+          alt={file.name}
           onLoad={() => {
             URL.revokeObjectURL(file.preview);
           }}
@@ -123,7 +123,7 @@ export default function Home() {
   useEffect(() => {
     // Make sure to revoke the data uris to avoid memory leaks, will run on unmount
     return () => files.forEach((file) => URL.revokeObjectURL(file.preview));
-  }, []);
+  }, [files]);
 
   return (
     <>

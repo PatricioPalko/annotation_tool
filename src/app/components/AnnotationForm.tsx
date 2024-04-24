@@ -87,8 +87,8 @@ const AnnotationForm = () => {
 
   return (
     <form className="annotationForm" onSubmit={formik.handleSubmit}>
-      <Typography variant="h5" component={"h5"} className="formTitle">
-        Annotate 'Em all
+      <Typography variant="h5" component="h5" className="formTitle">
+        Annotate &apos;Em all
       </Typography>
 
       <TextField
