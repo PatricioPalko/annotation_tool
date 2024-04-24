@@ -12,10 +12,6 @@ interface FormValues {
   currency: string;
 }
 
-interface OtherProps {
-  message: string;
-}
-
 const currencies = [
   {
     value: "EUR",
@@ -37,7 +33,25 @@ const AnnotationForm = () => {
   const validationSchema = yup.object({
     supplierName: yup
       .string()
-      .matches(/^[a-zA-ZÀ-ÖÙ-öù-ÿĀ-žḀ-ỿ0-9\s\-\/.]+$/, "ad"),
+      .matches(
+        /^[a-zA-ZÀ-ÖÙ-öù-ÿĀ-žḀ-ỿ0-9\s\-\/.]+$/,
+        "Please enter valid name"
+      )
+      .min(1, "Supplier name must be at least 1 character")
+      .required("Supplier name is required"),
+    purchaseDate: yup
+      .date()
+      .typeError("Please enter a valid date")
+      .min("1970-01-01", "Date is too early")
+      .required("Date of the purchase is required"),
+    totalAmount: yup
+      .number()
+      .positive("Total amount must be positive")
+      .required("Total amount is required"),
+    currency: yup
+      .string()
+      .oneOf(currencies.map((currency) => currency.value))
+      .required("Currency is required"),
   });
 
   const handleSubmit = async (

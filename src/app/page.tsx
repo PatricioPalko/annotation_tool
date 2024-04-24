@@ -2,8 +2,10 @@
 import { Button, Grid, Typography } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 import { useDropzone } from "react-dropzone";
+import { Document, Page, pdfjs } from "react-pdf";
 import AnnotationForm from "./components/AnnotationForm";
 import styles from "./page.module.scss";
+pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
 const baseStyle = {
   flex: 1,
@@ -52,10 +54,13 @@ function StyledDropzone({ files, setFiles }: any) {
           acceptedFiles.map((file) =>
             Object.assign(file, {
               preview: URL.createObjectURL(file),
+              key: file.name,
             })
           )
         );
       },
+      multiple: false,
+      maxFiles: 1,
     });
 
   const style = useMemo(
@@ -72,8 +77,8 @@ function StyledDropzone({ files, setFiles }: any) {
     <div className="container">
       <div {...getRootProps({ style })}>
         <input {...getInputProps()} />
-        <p>Drag 'n' drop some files here, or click to select files</p>
-        <em>(Only *.jpeg, *.jpg, *.pdf and *.png images will be accepted)</em>
+        <p>Drag 'n' drop some file here, or click to select file</p>
+        <em>(Only *.jpeg, *.jpg, *.png images and *.pdf will be accepted)</em>
       </div>
     </div>
   );
@@ -82,8 +87,13 @@ function StyledDropzone({ files, setFiles }: any) {
 export default function Home() {
   const [files, setFiles] = useState<(File & { preview: string })[]>([]);
 
-  const thumbs = files.map((file) => (
-    <div className={styles.thumb} key={file.name}>
+  const [numPages, setNumPages] = useState<number>();
+
+  function onDocumentLoadSuccess({ numPages }: { numPages: number }): void {
+    setNumPages(numPages);
+  }
+  const thumbs = files.map((file, id) => (
+    <div className={styles.thumb} key={id}>
       <div className={styles.thumbInner}>
         <img
           src={file.preview}
@@ -96,6 +106,19 @@ export default function Home() {
       </div>
     </div>
   ));
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const fileList = event.target.files;
+    if (fileList) {
+      const updatedFiles: (File & { preview: string; key: string })[] =
+        Array.from(fileList).map((file) => ({
+          ...file,
+          preview: URL.createObjectURL(file),
+          key: file.name,
+        }));
+      setFiles(updatedFiles);
+    }
+  };
 
   useEffect(() => {
     // Make sure to revoke the data uris to avoid memory leaks, will run on unmount
@@ -120,9 +143,26 @@ export default function Home() {
               mt={6}
             >
               <Grid item xs={4} mr={2}>
-                <Grid>
-                  <div className={styles.thumbsContainer}>{thumbs}</div>
-                </Grid>
+                {files[0].type !== "application/pdf" ? (
+                  <Grid>
+                    <div className={styles.thumbsContainer}>{thumbs}</div>
+                  </Grid>
+                ) : (
+                  <Document
+                    file={files[0]}
+                    onLoadSuccess={onDocumentLoadSuccess}
+                  >
+                    {Array.from(new Array(numPages), (el, index) => (
+                      <Page
+                        key={`page_${index + 1}`}
+                        pageNumber={index + 1}
+                        renderTextLayer={false}
+                        renderAnnotationLayer={false}
+                        className={styles.pdfPage}
+                      />
+                    ))}
+                  </Document>
+                )}
               </Grid>
               <Grid item xs={4} ml={2}>
                 <AnnotationForm />
@@ -141,7 +181,12 @@ export default function Home() {
               </Typography>
               <Button variant="contained" component="label">
                 Upload File
-                <input type="file" hidden />
+                <input
+                  type="file"
+                  hidden
+                  accept="image/jpeg,.jpg,.png,.pdf"
+                  onChange={handleFileChange}
+                />
               </Button>
             </Grid>
           )}

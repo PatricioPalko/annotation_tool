@@ -41,3 +41,8 @@ $thumb-border: 1px solid #eaeaea;
   height: 100%;
   object-fit: contain;
 }
+
+.pdfPage canvas {
+  width: 100% !important;
+  height: auto !important;
+}
