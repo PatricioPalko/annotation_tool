@@ -1,0 +1,43 @@
+$thumb-padding: 4px;
+$thumb-border-radius: 2px;
+$thumb-border: 1px solid #eaeaea;
+
+.main {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 3rem;
+  min-height: 100vh;
+}
+
+.thumb {
+  display: inline-flex;
+  border-radius: $thumb-border-radius;
+  border: $thumb-border;
+  margin-bottom: 8px;
+  margin-right: 8px;
+  width: 100%;
+  height: 100%;
+  padding: $thumb-padding;
+  box-sizing: border-box;
+}
+
+.thumbsContainer {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.thumbInner {
+  display: flex;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}

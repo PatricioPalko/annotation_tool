@@ -13,10 +13,12 @@
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
     "@mui/material": "^5.15.15",
+    "formik": "^2.4.5",
     "next": "14.2.2",
     "react": "^18",
     "react-dom": "^18",
-    "react-dropzone": "^14.2.3"
+    "react-dropzone": "^14.2.3",
+    "yup": "^1.4.0"
   },
   "devDependencies": {
     "@types/node": "^20",
@@ -24,6 +26,7 @@
     "@types/react-dom": "^18",
     "eslint": "^8",
     "eslint-config-next": "14.2.2",
+    "sass": "^1.75.0",
     "typescript": "^5"
   }
 }

@@ -1,0 +1,49 @@
+.annotationForm {
+  display: flex;
+  flex-direction: column;
+  .formTitle {
+    color: black;
+    text-transform: uppercase;
+    margin-bottom: 32px;
+  }
+  .input {
+    margin-bottom: 24px;
+
+    &.input--withLegend {
+      & > label {
+        opacity: 1;
+        color: black;
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        margin-left: 2px;
+        transform: translate(14px, -9px) scale(0.75);
+      }
+      fieldset legend {
+        max-width: 100%;
+      }
+    }
+
+    fieldset {
+      border-width: 2px;
+      legend {
+        font-size: inherit;
+      }
+    }
+    input,
+    .selectBox {
+      height: 1em;
+      min-height: 1em;
+    }
+  }
+
+  .input label {
+    color: black;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-left: 2px;
+  }
+}

@@ -1,8 +1,9 @@
 "use client";
-import { Button, Container, Grid, Typography } from "@mui/material";
-import { useMemo } from "react";
+import { Button, Grid, Typography } from "@mui/material";
+import { useEffect, useMemo, useState } from "react";
 import { useDropzone } from "react-dropzone";
-import styles from "./page.module.css";
+import AnnotationForm from "./components/AnnotationForm";
+import styles from "./page.module.scss";
 
 const baseStyle = {
   flex: 1,
@@ -32,12 +33,28 @@ const rejectStyle = {
   borderColor: "#ff1744",
 };
 
-function StyledDropzone(props: any) {
+const img = {
+  display: "block",
+  width: "100%",
+  height: "100%",
+  objectFit: "contain" as "contain",
+};
+
+function StyledDropzone({ files, setFiles }: any) {
   const { getRootProps, getInputProps, isFocused, isDragAccept, isDragReject } =
     useDropzone({
       accept: {
         "image/*": [".jpeg", ".jpg", ".png"],
         "application/pdf": [".pdf"],
+      },
+      onDrop: (acceptedFiles) => {
+        setFiles(
+          acceptedFiles.map((file) =>
+            Object.assign(file, {
+              preview: URL.createObjectURL(file),
+            })
+          )
+        );
       },
     });
 
@@ -62,28 +79,74 @@ function StyledDropzone(props: any) {
   );
 }
 
-<StyledDropzone />;
-
 export default function Home() {
+  const [files, setFiles] = useState<(File & { preview: string })[]>([]);
+
+  const thumbs = files.map((file) => (
+    <div className={styles.thumb} key={file.name}>
+      <div className={styles.thumbInner}>
+        <img
+          src={file.preview}
+          style={img}
+          // Revoke data uri after image is loaded
+          onLoad={() => {
+            URL.revokeObjectURL(file.preview);
+          }}
+        />
+      </div>
+    </div>
+  ));
+
+  useEffect(() => {
+    // Make sure to revoke the data uris to avoid memory leaks, will run on unmount
+    return () => files.forEach((file) => URL.revokeObjectURL(file.preview));
+  }, []);
+
   return (
-    <main className={styles.main}>
-      <Grid container spacing={2}>
-        <Grid item xs={12}>
-          <Typography variant="h1" textAlign="center">
-            Annotation tool
-          </Typography>
-          <Container maxWidth="lg">
-            <StyledDropzone />
-            <Typography variant="inherit" textAlign="center">
-              or
+    <>
+      <main className={styles.main}>
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <Typography variant="h1" textAlign="center">
+              Annotation tool
             </Typography>
-            <Button variant="contained" component="label">
-              Upload File
-              <input type="file" hidden />
-            </Button>
-          </Container>
+          </Grid>
+          {files && files.length > 0 ? (
+            <Grid
+              container
+              direction="row"
+              justifyContent="center"
+              alignItems="flex-start"
+              mt={6}
+            >
+              <Grid item xs={4} mr={2}>
+                <Grid>
+                  <div className={styles.thumbsContainer}>{thumbs}</div>
+                </Grid>
+              </Grid>
+              <Grid item xs={4} ml={2}>
+                <AnnotationForm />
+              </Grid>
+            </Grid>
+          ) : (
+            <Grid
+              container
+              direction="column"
+              justifyContent="center"
+              alignItems="center"
+            >
+              <StyledDropzone files={files} setFiles={setFiles} />
+              <Typography variant="inherit" textAlign="center">
+                or
+              </Typography>
+              <Button variant="contained" component="label">
+                Upload File
+                <input type="file" hidden />
+              </Button>
+            </Grid>
+          )}
         </Grid>
-      </Grid>
-    </main>
+      </main>
+    </>
   );
 }
