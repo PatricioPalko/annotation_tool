@@ -36,7 +36,7 @@ const rejectStyle = {
   borderColor: "#ff1744",
 };
 
-function StyledDropzone({ files, setFiles }: any) {
+function StyledDropzone({ files, setFiles, setIsFormSubmitted }: any) {
   const { getRootProps, getInputProps, isFocused, isDragAccept, isDragReject } =
     useDropzone({
       accept: {
@@ -52,6 +52,7 @@ function StyledDropzone({ files, setFiles }: any) {
             })
           )
         );
+        setIsFormSubmitted(false);
       },
       multiple: false,
       maxFiles: 1,
@@ -82,6 +83,13 @@ export default function Home() {
   const [files, setFiles] = useState<(File & { preview: string })[]>([]);
 
   const [numPages, setNumPages] = useState<number>();
+  const [isFormSubmitted, setIsFormSubmitted] = useState<boolean>(false);
+
+  const handletIsFormSubmitted = (newState: boolean) => {
+    setTimeout(() => {
+      setIsFormSubmitted(newState);
+    }, 3000);
+  };
 
   function onDocumentLoadSuccess({ numPages }: { numPages: number }): void {
     setNumPages(numPages);
@@ -142,7 +150,7 @@ export default function Home() {
               annotation tool
             </Typography>
           </Grid>
-          {files && files.length > 0 ? (
+          {files && files.length > 0 && isFormSubmitted === false ? (
             <Grid
               container
               direction="row"
@@ -173,7 +181,7 @@ export default function Home() {
                 )}
               </Grid>
               <Grid item xs={4} ml={7} textAlign="left">
-                <AnnotationForm />
+                <AnnotationForm onStateChange={handletIsFormSubmitted} />
               </Grid>
             </Grid>
           ) : (
@@ -183,7 +191,11 @@ export default function Home() {
               justifyContent="center"
               alignItems="center"
             >
-              <StyledDropzone files={files} setFiles={setFiles} />
+              <StyledDropzone
+                files={files}
+                setFiles={setFiles}
+                setIsFormSubmitted={setIsFormSubmitted}
+              />
               <Typography variant="inherit" textAlign="center">
                 or
               </Typography>

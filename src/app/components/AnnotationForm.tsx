@@ -33,9 +33,13 @@ const currencies = [
   },
 ];
 
-const AnnotationForm = () => {
+const AnnotationForm = ({ onStateChange }: any) => {
   const [submitting, setSubmitting] = useState<boolean>(false);
   const [openSnackbar, setOpenSnackbar] = useState<boolean>(false);
+
+  const handleChangeFormState = (value: boolean) => {
+    onStateChange(value);
+  };
 
   const handleClose = (
     event: React.SyntheticEvent | Event,
@@ -86,6 +90,7 @@ const AnnotationForm = () => {
 
       // Set submitting to false after successful submission
       setSubmitting(false);
+      handleChangeFormState(true);
       resetForm();
     } catch (error) {
       // Handle form submission error
@@ -193,7 +198,7 @@ const AnnotationForm = () => {
         open={openSnackbar}
         autoHideDuration={5000}
         onClose={handleClose}
-        message="Data saved successfully"
+        message="Data saved successfully, you will be redirected. "
         anchorOrigin={{ vertical: "top", horizontal: "right" }}
         ContentProps={{
           classes: {
