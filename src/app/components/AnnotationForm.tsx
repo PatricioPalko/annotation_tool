@@ -1,4 +1,10 @@
-import { Button, MenuItem, TextField, Typography } from "@mui/material";
+import {
+  Button,
+  MenuItem,
+  Snackbar,
+  TextField,
+  Typography,
+} from "@mui/material";
 import axios from "axios";
 import { useFormik } from "formik";
 import { useState } from "react";
@@ -28,7 +34,19 @@ const currencies = [
 ];
 
 const AnnotationForm = () => {
-  const [submitting, setSubmitting] = useState(false);
+  const [submitting, setSubmitting] = useState<boolean>(false);
+  const [openSnackbar, setOpenSnackbar] = useState<boolean>(false);
+
+  const handleClose = (
+    event: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpenSnackbar(false);
+  };
 
   const validationSchema = yup.object({
     supplierName: yup
@@ -63,6 +81,7 @@ const AnnotationForm = () => {
       // Perform form submission logic here
       console.log(values);
       await axios.post("/api/saveFormData", values);
+      setOpenSnackbar(true);
 
       // Set submitting to false after successful submission
       setSubmitting(false);
@@ -86,81 +105,97 @@ const AnnotationForm = () => {
   });
 
   return (
-    <form className="annotationForm" onSubmit={formik.handleSubmit}>
-      <Typography variant="h5" component="h5" className="formTitle">
-        Annotate &apos;Em all
-      </Typography>
+    <>
+      <form className="annotationForm" onSubmit={formik.handleSubmit}>
+        <Typography variant="h5" component="h5" className="formTitle">
+          Annotate &apos;Em all
+        </Typography>
 
-      <TextField
-        label="Supplier name"
-        type="text"
-        name="supplierName"
-        value={formik.values.supplierName}
-        onChange={formik.handleChange}
-        onBlur={formik.handleBlur}
-        error={
-          formik.touched.supplierName && Boolean(formik.errors.supplierName)
-        }
-        helperText={formik.touched.supplierName && formik.errors.supplierName}
-        className="input"
-        autoComplete="true"
-        required
+        <TextField
+          label="Supplier name"
+          type="text"
+          name="supplierName"
+          value={formik.values.supplierName}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          error={
+            formik.touched.supplierName && Boolean(formik.errors.supplierName)
+          }
+          helperText={formik.touched.supplierName && formik.errors.supplierName}
+          className="input"
+          autoComplete="true"
+          required
+        />
+
+        <TextField
+          label="Date of the purchase"
+          type="Date"
+          name="purchaseDate"
+          value={formik.values.purchaseDate}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          error={
+            formik.touched.purchaseDate && Boolean(formik.errors.purchaseDate)
+          }
+          className="input input--withLegend"
+          autoComplete="true"
+          required
+        />
+
+        <TextField
+          label="Total amount"
+          type="number"
+          name="totalAmount"
+          value={formik.values.totalAmount}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          error={
+            formik.touched.totalAmount && Boolean(formik.errors.totalAmount)
+          }
+          helperText={formik.touched.totalAmount && formik.errors.totalAmount}
+          className="input"
+          autoComplete="true"
+          required
+        />
+
+        <TextField
+          label="Currency"
+          select
+          name="currency"
+          value={formik.values.currency}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          error={formik.touched.currency && Boolean(formik.errors.currency)}
+          className="input"
+          autoComplete="true"
+          defaultValue={currencies.length > 0 ? currencies[0].value : ""}
+          inputProps={{ className: "selectBox" }}
+          required
+        >
+          {currencies.map((option, id) => (
+            <MenuItem key={id} value={option.value}>
+              {option.value}
+            </MenuItem>
+          ))}
+        </TextField>
+
+        <Button type="submit" disabled={submitting} variant="contained">
+          Submit
+        </Button>
+      </form>
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={5000}
+        onClose={handleClose}
+        message="Data saved successfully"
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        ContentProps={{
+          classes: {
+            root: "successSnackbar",
+          },
+        }}
       />
-
-      <TextField
-        label="Date of the purchase"
-        type="Date"
-        name="purchaseDate"
-        value={formik.values.purchaseDate}
-        onChange={formik.handleChange}
-        onBlur={formik.handleBlur}
-        error={
-          formik.touched.purchaseDate && Boolean(formik.errors.purchaseDate)
-        }
-        className="input input--withLegend"
-        autoComplete="true"
-        required
-      />
-
-      <TextField
-        label="Total amount"
-        type="number"
-        name="totalAmount"
-        value={formik.values.totalAmount}
-        onChange={formik.handleChange}
-        onBlur={formik.handleBlur}
-        error={formik.touched.totalAmount && Boolean(formik.errors.totalAmount)}
-        helperText={formik.touched.totalAmount && formik.errors.totalAmount}
-        className="input"
-        autoComplete="true"
-        required
-      />
-
-      <TextField
-        label="Currency"
-        select
-        name="currency"
-        value={formik.values.currency}
-        onChange={formik.handleChange}
-        onBlur={formik.handleBlur}
-        error={formik.touched.currency && Boolean(formik.errors.currency)}
-        className="input"
-        autoComplete="true"
-        defaultValue={currencies.length > 0 ? currencies[0].value : ""}
-        inputProps={{ className: "selectBox" }}
-        required
-      >
-        {currencies.map((option, id) => (
-          <MenuItem key={id} value={option.value}>
-            {option.value}
-          </MenuItem>
-        ))}
-      </TextField>
-
-      <Button type="submit" disabled={submitting} variant="contained">
-        Submit
-      </Button>
-    </form>
+    </>
   );
 };
 

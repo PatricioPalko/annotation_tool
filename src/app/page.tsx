@@ -102,6 +102,10 @@ export default function Home() {
           onLoad={() => {
             URL.revokeObjectURL(file.preview);
           }}
+          width={0}
+          height={0}
+          sizes="100vw"
+          style={{ width: "100%", height: "auto" }}
         />
       </div>
     </div>
