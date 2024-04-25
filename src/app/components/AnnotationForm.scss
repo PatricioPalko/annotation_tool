@@ -1,18 +1,48 @@
+@import "../globals.scss";
+
 .annotationForm {
-  display: flex;
+  display: inline-flex;
+  align-items: flex-start;
   flex-direction: column;
   .formTitle {
-    color: black;
+    color: $font-color;
     text-transform: uppercase;
     margin-bottom: 32px;
+    text-align: left;
   }
   .input {
     margin-bottom: 24px;
+    min-width: 300px;
+
+    input {
+      background-color: $secondary-color;
+      color: $font-color;
+    }
+    input:-webkit-autofill {
+      color: $font-color;
+      -webkit-box-shadow: 0 0 0 30px $secondary-color inset;
+      -webkit-text-fill-color: $font-color;
+      caret-color: $font-color;
+    }
+
+    fieldset {
+      border-color: $contrast-cold-color;
+      // background-color: $secondary-color !important;
+      color: $font-color;
+
+      &:hover {
+        border-color: $font-color;
+      }
+    }
+
+    // input:autofil + fieldset {
+    //   background-color: $secondary-color !important;
+    // }
 
     &.input--withLegend {
       & > label {
         opacity: 1;
-        color: black;
+        color: $font-color;
         font-size: 12px;
         font-weight: 600;
         text-transform: uppercase;
@@ -28,30 +58,64 @@
     fieldset {
       border-width: 2px;
       legend {
-        font-size: inherit;
+        font-size: 0.8em;
       }
     }
     input,
     .selectBox {
       height: 1em;
       min-height: 1em;
+      color: $font-color;
+      text-align: left;
+    }
+    svg {
+      fill: $font-color;
     }
   }
 
   .input label {
-    color: black;
+    color: $font-color;
     font-size: 12px;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 2px;
     margin-left: 2px;
   }
+
+  .button {
+    background-color: $contrast-cold-color;
+    color: $main-color;
+    margin-top: 16px;
+    &:hover {
+      background-color: $font-color;
+    }
+  }
 }
 
 .successSnackbar {
   background-color: #54ac68;
-  color: #fff;
+  color: $font-color;
   text-transform: uppercase;
   font-size: 12px;
   letter-spacing: 1px;
+}
+
+.MuiFormHelperText-root.Mui-error {
+  color: $contrast-warm-color;
+}
+
+.MuiInputBase-root.Mui-error fieldset {
+  border-color: $contrast-warm-color !important;
+}
+
+.MuiOutlinedInput-root {
+  &:hover {
+    fieldset {
+      border-color: $contrast-cold-color !important;
+    }
+  }
+}
+
+::-webkit-calendar-picker-indicator {
+  filter: invert(1);
 }

@@ -1,11 +1,16 @@
 $thumb-padding: 4px;
 $thumb-border-radius: 2px;
 $thumb-border: 1px solid #eaeaea;
+$main-color: #15142c;
+$secondary-color: #1b1a39;
+$contrast-cold-color: #00eefd;
+$contrast-warm-color: #fe2c70;
+$font-color: #f2f2f2;
 
 .main {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   padding: 3rem;
   min-height: 100vh;
@@ -13,8 +18,7 @@ $thumb-border: 1px solid #eaeaea;
 
 .thumb {
   display: inline-flex;
-  border-radius: $thumb-border-radius;
-  border: $thumb-border;
+  justify-content: center;
   margin-bottom: 8px;
   margin-right: 8px;
   width: 100%;
@@ -45,4 +49,21 @@ $thumb-border: 1px solid #eaeaea;
 .pdfPage canvas {
   width: 100% !important;
   height: auto !important;
+}
+
+.button {
+  background-color: $contrast-cold-color;
+  color: $main-color;
+  margin-top: 16px;
+  &:hover {
+    background-color: $font-color;
+  }
+}
+
+.dropzone {
+  background-color: $secondary-color;
+  border-color: $font-color;
+  &:hover {
+    cursor: pointer;
+  }
 }

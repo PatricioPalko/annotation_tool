@@ -14,7 +14,7 @@ import "./AnnotationForm.scss";
 interface FormValues {
   supplierName: string;
   purchaseDate: Date;
-  totalAmount: number;
+  totalAmount: string;
   currency: string;
 }
 
@@ -64,6 +64,7 @@ const AnnotationForm = () => {
       .required("Date of the purchase is required"),
     totalAmount: yup
       .number()
+      .typeError("Please enter a valid number")
       .positive("Total amount must be positive")
       .required("Total amount is required"),
     currency: yup
@@ -96,8 +97,8 @@ const AnnotationForm = () => {
   const formik = useFormik({
     initialValues: {
       supplierName: "",
-      purchaseDate: new Date(),
-      totalAmount: 0,
+      purchaseDate: new Date("yyyy-MM-dd"),
+      totalAmount: "",
       currency: "",
     },
     validationSchema: validationSchema,
@@ -107,7 +108,7 @@ const AnnotationForm = () => {
   return (
     <>
       <form className="annotationForm" onSubmit={formik.handleSubmit}>
-        <Typography variant="h5" component="h5" className="formTitle">
+        <Typography variant="h4" component="h4" className="formTitle">
           Annotate &apos;Em all
         </Typography>
 
@@ -144,7 +145,7 @@ const AnnotationForm = () => {
 
         <TextField
           label="Total amount"
-          type="number"
+          type="text"
           name="totalAmount"
           value={formik.values.totalAmount}
           onChange={formik.handleChange}
@@ -179,7 +180,12 @@ const AnnotationForm = () => {
           ))}
         </TextField>
 
-        <Button type="submit" disabled={submitting} variant="contained">
+        <Button
+          type="submit"
+          disabled={submitting}
+          variant="contained"
+          className="button"
+        >
           Submit
         </Button>
       </form>

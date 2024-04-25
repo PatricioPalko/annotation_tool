@@ -6,6 +6,7 @@ import { useDropzone } from "react-dropzone";
 import { Document, Page, pdfjs } from "react-pdf";
 import AnnotationForm from "./components/AnnotationForm";
 import styles from "./page.module.scss";
+
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
 const baseStyle = {
@@ -13,19 +14,18 @@ const baseStyle = {
   display: "flex",
   flexDirection: "column" as "column",
   alignItems: "center",
-  padding: "20px",
+  padding: "100px 60px ",
   borderWidth: 2,
   borderRadius: 2,
-  borderColor: "#eeeeee",
   borderStyle: "dashed",
-  backgroundColor: "#fafafa",
-  color: "#bdbdbd",
   outline: "none",
   transition: "border .24s ease-in-out",
+  margin: "40px 0 32px",
+  letterSpacing: "1px",
 };
 
 const focusedStyle = {
-  borderColor: "#2196f3",
+  borderColor: "#00eefd",
 };
 
 const acceptStyle = {
@@ -34,13 +34,6 @@ const acceptStyle = {
 
 const rejectStyle = {
   borderColor: "#ff1744",
-};
-
-const img = {
-  display: "block",
-  width: "100%",
-  height: "100%",
-  objectFit: "contain" as "contain",
 };
 
 function StyledDropzone({ files, setFiles }: any) {
@@ -76,7 +69,7 @@ function StyledDropzone({ files, setFiles }: any) {
 
   return (
     <div className="container">
-      <div {...getRootProps({ style })}>
+      <div {...getRootProps({ style })} className={styles.dropzone}>
         <input {...getInputProps()} />
         <p>Drag &apos;n&apos; drop some file here, or click to select file</p>
         <em>(Only *.jpeg, *.jpg, *.png images and *.pdf will be accepted)</em>
@@ -132,10 +125,21 @@ export default function Home() {
   return (
     <>
       <main className={styles.main}>
-        <Grid container spacing={2}>
+        <Grid container spacing={2} textAlign="center">
           <Grid item xs={12}>
-            <Typography variant="h1" textAlign="center">
-              Annotation tool
+            <Image
+              src="/logo.svg"
+              alt={"annotation tool logo"}
+              width={60}
+              height={60}
+            />
+            <Typography
+              variant="h1"
+              textAlign="center"
+              fontWeight="bold"
+              mt={7}
+            >
+              annotation tool
             </Typography>
           </Grid>
           {files && files.length > 0 ? (
@@ -146,7 +150,7 @@ export default function Home() {
               alignItems="flex-start"
               mt={6}
             >
-              <Grid item xs={4} mr={2}>
+              <Grid item xs={4} mr={7}>
                 {files[0].type !== "application/pdf" ? (
                   <Grid>
                     <div className={styles.thumbsContainer}>{thumbs}</div>
@@ -168,7 +172,7 @@ export default function Home() {
                   </Document>
                 )}
               </Grid>
-              <Grid item xs={4} ml={2}>
+              <Grid item xs={4} ml={7} textAlign="left">
                 <AnnotationForm />
               </Grid>
             </Grid>
@@ -183,7 +187,11 @@ export default function Home() {
               <Typography variant="inherit" textAlign="center">
                 or
               </Typography>
-              <Button variant="contained" component="label">
+              <Button
+                variant="contained"
+                component="label"
+                className={styles.button}
+              >
                 Upload File
                 <input
                   type="file"
