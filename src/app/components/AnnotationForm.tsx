@@ -112,7 +112,12 @@ const AnnotationForm = ({ onStateChange }: any) => {
 
   return (
     <>
-      <form className="annotationForm" onSubmit={formik.handleSubmit}>
+      <form
+        className="annotationForm"
+        onSubmit={formik.handleSubmit}
+        data-testid="annotationForm"
+        aria-label="annotationForm"
+      >
         <Typography variant="h4" component="h4" className="formTitle">
           Annotate &apos;Em all
         </Typography>

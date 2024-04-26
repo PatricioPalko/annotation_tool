@@ -71,7 +71,7 @@ function StyledDropzone({ files, setFiles, setIsFormSubmitted }: any) {
   return (
     <div className="container">
       <div {...getRootProps({ style })} className={styles.dropzone}>
-        <input {...getInputProps()} />
+        <input {...getInputProps()} data-testid="dropzone" />
         <p>Drag &apos;n&apos; drop some file here, or click to select file</p>
         <em>(Only *.jpeg, *.jpg, *.png images and *.pdf will be accepted)</em>
       </div>
@@ -107,6 +107,7 @@ export default function Home() {
           height={0}
           sizes="100vw"
           style={{ width: "100%", height: "auto" }}
+          data-testid="thumb"
         />
       </div>
     </div>
@@ -140,6 +141,7 @@ export default function Home() {
               alt={"annotation tool logo"}
               width={60}
               height={60}
+              data-testid="logo"
             />
             <Typography
               variant="h1"
