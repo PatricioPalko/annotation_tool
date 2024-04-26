@@ -65,6 +65,7 @@ const AnnotationForm = ({ onStateChange }: any) => {
       .date()
       .typeError("Please enter a valid date")
       .min("1970-01-01", "Date is too early")
+      .max("2100-01-01", "Date is too late")
       .required("Date of the purchase is required"),
     totalAmount: yup
       .number()
@@ -147,6 +148,11 @@ const AnnotationForm = ({ onStateChange }: any) => {
           onBlur={formik.handleBlur}
           error={
             formik.touched.purchaseDate && Boolean(formik.errors.purchaseDate)
+          }
+          helperText={
+            formik.touched.purchaseDate && formik.errors.purchaseDate
+              ? `${formik.errors.purchaseDate}`
+              : ""
           }
           className="input input--withLegend"
           autoComplete="true"
